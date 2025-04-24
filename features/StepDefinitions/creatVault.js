@@ -57,12 +57,11 @@ When("I configure the network in Xverse", async function () {
 });
 
 When("I reconnect to Ducat Protocol", async function () {
-  // Navigate to Ducat Protocol again
   const ducatPage2 = new DucatProtocolPage(await this.context.newPage());
   await ducatPage2.goto();
   this.page = await ducatPage2.launchApp(this.context);
 
-  // Connect wallet again
+  
   const appPage2 = new DucatProtocolPage(this.page);
   await appPage2.waitForLoad();
   await appPage2.connectWallet();
@@ -96,24 +95,22 @@ When(
 
       const context = this.browser.contexts()[0];
 
-      // Initialize and use the Xverse Extension page
       const xversePage = new XverseExtensionPage(await context.newPage());
       await xversePage.goto();
       await xversePage.createWallet();
 
       console.log("Starting test with existing Chrome and Xverse...");
 
-      // Navigate to Ducat Protocol
+      
       const ducatPage = new DucatProtocolPage(await context.newPage());
       await ducatPage.goto();
       this.page = await ducatPage.launchApp(context);
 
-      // Initialize app interactions with the new page
+    
       const appPage = new DucatProtocolPage(this.page);
       await appPage.waitForLoad();
       await appPage.connectWallet();
 
-      // Handle wallet selection
       const walletPage = await appPage.selectXverseWallet(
         context,
         handlePageTransition,
@@ -128,12 +125,12 @@ When(
       await xverseConfigPage.goto();
       await xverseConfigPage.configureNetwork();
 
-      // Navigate to Ducat Protocol again
+    
       const ducatPage2 = new DucatProtocolPage(await context.newPage());
       await ducatPage2.goto();
       this.page = await ducatPage2.launchApp(context);
 
-      // Connect wallet again
+     
       const appPage2 = new DucatProtocolPage(this.page);
       await appPage2.waitForLoad();
       await appPage2.connectWallet();
