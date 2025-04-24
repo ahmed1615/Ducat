@@ -104687,13 +104687,11 @@ PERFORMANCE OF THIS SOFTWARE.
             s = 0 === n ? i?.lockTime : r.global.fallbackLocktime,
             a = new Dl({ ...e, version: o, lockTime: s, PSBTVersion: n }),
             u = 0 === n ? i?.inputs.length : r.global.inputCount;
-          a.inputs = r.inputs
-            .slice(0, u)
-            .map((t, e) => ({
-              finalScriptSig: Qf,
-              ...r.global.unsignedTx?.inputs[e],
-              ...t,
-            }));
+          a.inputs = r.inputs.slice(0, u).map((t, e) => ({
+            finalScriptSig: Qf,
+            ...r.global.unsignedTx?.inputs[e],
+            ...t,
+          }));
           const c = 0 === n ? i?.outputs.length : r.global.outputCount;
           return (
             (a.outputs = r.outputs
@@ -104832,12 +104830,10 @@ PERFORMANCE OF THIS SOFTWARE.
           return bl.encode({
             version: this.version,
             lockTime: this.lockTime,
-            inputs: this.inputs
-              .map(Bl)
-              .map((e) => ({
-                ...e,
-                finalScriptSig: (t && e.finalScriptSig) || Qf,
-              })),
+            inputs: this.inputs.map(Bl).map((e) => ({
+              ...e,
+              finalScriptSig: (t && e.finalScriptSig) || Qf,
+            })),
             outputs: this.outputs.map(Pl),
             witnesses: this.inputs.map((t) => t.finalScriptWitness || []),
             segwitFlag: e && this.hasWitnesses,

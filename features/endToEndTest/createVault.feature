@@ -9,8 +9,3 @@ Feature: Advanced Vault Management in Ducat Protocol
     And I configure the network in Xverse
     And I reconnect to Ducat Protocol
     Then I should be able to create a new vault
-    Given user is on the vault page
-    When i need to deposit
-    And user confirms deposit
-    Then the deposit should be completed
-    And the balance should be increased

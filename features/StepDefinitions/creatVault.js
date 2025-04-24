@@ -61,7 +61,6 @@ When("I reconnect to Ducat Protocol", async function () {
   await ducatPage2.goto();
   this.page = await ducatPage2.launchApp(this.context);
 
-  
   const appPage2 = new DucatProtocolPage(this.page);
   await appPage2.waitForLoad();
   await appPage2.connectWallet();
@@ -101,12 +100,10 @@ When(
 
       console.log("Starting test with existing Chrome and Xverse...");
 
-      
       const ducatPage = new DucatProtocolPage(await context.newPage());
       await ducatPage.goto();
       this.page = await ducatPage.launchApp(context);
 
-    
       const appPage = new DucatProtocolPage(this.page);
       await appPage.waitForLoad();
       await appPage.connectWallet();
@@ -125,12 +122,10 @@ When(
       await xverseConfigPage.goto();
       await xverseConfigPage.configureNetwork();
 
-    
       const ducatPage2 = new DucatProtocolPage(await context.newPage());
       await ducatPage2.goto();
       this.page = await ducatPage2.launchApp(context);
 
-     
       const appPage2 = new DucatProtocolPage(this.page);
       await appPage2.waitForLoad();
       await appPage2.connectWallet();

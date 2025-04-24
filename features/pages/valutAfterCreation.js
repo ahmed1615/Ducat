@@ -24,19 +24,10 @@ class valutAfterCreation extends BasePage {
       depositComplete: 'xpath = //div[contains(text(),"BTC Deposit Complete")]',
       balanceElement: "xpath=(//h3)[1]/div",
     };
-    (this.selectorOfWithdraw = {
-      withdrawAction:
-        'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[1]/button[2]',
-      withdrawal25: 'xpath=(//button[@type="button"])[4]',
-      withdraw_button:
-        'xpath=(//button[contains(@class, "bg-button-primary") and contains(text(), "Withdraw")])[1]',
-      withdrawSubmitted:
-        'xpath = //div[contains(text(),"BTC Withdraw Submitted")]',
-    }),
-      (this.selectorsofXverse = {
-        confirmButton:
-          'xpath=//*[contains(text(), "Confirm") or contains(text(), "CONFIRM")]',
-      });
+    this.selectorsofXverse = {
+      confirmButton:
+        'xpath=//*[contains(text(), "Confirm") or contains(text(), "CONFIRM")]',
+    };
   }
   async getCurrentBalance() {
     await this.page.waitForTimeout(6000);
@@ -51,6 +42,13 @@ class valutAfterCreation extends BasePage {
   }
 
   async verifyBalanceIncreased(initialBalance) {
+    await this.page.waitForTimeout(1000);
+    await this.page.reload();
+    await this.page.locator(this.selectorOfDeposit.balanceElement).waitFor({
+      state: "visible",
+      timeout: 10000,
+    });
+
     const currentBalance = await this.getCurrentBalance();
     console.log(
       `Comparing balances - Initial: $${initialBalance}, Current: $${currentBalance}`,
