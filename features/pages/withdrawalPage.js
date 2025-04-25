@@ -11,6 +11,9 @@ class withdrawalPage extends BasePage {
       withdrawAction:
         'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[1]/button[2]',
       withdrawal25: 'xpath=(//button[@type="button"])[4]',
+      withdrawal50: 'xpath=(//button[@type="button"])[5]',
+      withdrawal75: 'xpath=(//button[@type="button"])[6]',
+      withdrawal100: 'xpath=(//button[@type="button"])[7]',
       withdraw_button:
         'xpath=(//button[contains(@class, "bg-button-primary") and contains(text(), "Withdraw")])[1]',
       withdrawSubmitted:
@@ -24,27 +27,52 @@ class withdrawalPage extends BasePage {
           'xpath=//*[contains(text(), "Confirm") or contains(text(), "CONFIRM")]',
       });
   }
-  async performWithdrawal() {
+  async performWithdrawal(percentage) {
     await this.page.locator(this.selectorOfWithdraw.withdrawAction).click();
     await this.page.waitForTimeout(5000);
-    await this.page
-      .locator(this.selectorOfWithdraw.withdrawal25)
-      .waitFor({ state: "visible" });
-    await this.page.locator(this.selectorOfWithdraw.withdrawal25).click();
+    let withdrawSelector;
+    
+    const parsedPercentage = parseInt(String(percentage).replace('%', ''));
+    
+    switch (parsedPercentage) {
+      case 25:
+        withdrawSelector = this.selectorOfWithdraw.withdrawal25;
+        break;
+      case 50:
+        withdrawSelector = this.selectorOfWithdraw.withdrawal50;
+        break;
+      case 75:
+        withdrawSelector = this.selectorOfWithdraw.withdrawal75;
+        break;
+      case 100:
+        withdrawSelector = this.selectorOfWithdraw.withdrawal100;
+        break;
+      default:
+        console.log(`Invalid percentage: ${percentage}. Defaulting to 25%.`);
+        withdrawSelector = this.selectorOfWithdraw.withdrawal25;
+    }
+    
+    await this.page.locator(withdrawSelector).waitFor({ state: "visible" });
+    await this.page.locator(withdrawSelector).click();
+    
     await this.page.locator(this.selectorOfWithdraw.withdraw_button).waitFor({
       state: "visible",
       timeout: 10000,
     });
+    
     const isDisabled = await this.page
       .locator(this.selectorOfWithdraw.withdraw_button)
       .isDisabled();
+    
     if (isDisabled) {
       console.log("Waiting for withdrawal button to be enabled...");
       await this.page.waitForTimeout(2000);
     }
+    
     console.log("Clicking withdraw button...");
     await this.page.locator(this.selectorOfWithdraw.withdraw_button).click();
     console.log("Withdraw button clicked successfully");
+    
     return this;
   }
   async handleConfirmationOfWithdraw(context, handlePageTransition) {

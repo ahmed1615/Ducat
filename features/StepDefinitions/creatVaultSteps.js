@@ -76,80 +76,13 @@ When("I reconnect to Ducat Protocol", async function () {
   }
 });
 
-Then("I should be able to create a new vault", async function () {
+Then("I should be able to create a new vault with {string} of Deposit OTC and {string} of Borrow UNIT", async function (depositOTC, borrowUnit) {
   const vaultPage = new VaultCreationPage(this.page);
   await vaultPage.navigateToCreateVault();
   await vaultPage.fillVaultName(generateRandomString());
   await this.page.waitForTimeout(8000);
-  await vaultPage.completeVaultCreation();
+  await vaultPage.completeVaultCreation(depositOTC, borrowUnit);
   await vaultPage.handleConfirmation(this.context, handlePageTransition);
   await vaultPage.waitForSuccessAndNavigate();
 });
 
-When(
-  "I open Xverse extension and navigate to Ducat Protocol app",
-  async function () {
-    try {
-      console.log("Opening Xverse extension and creating wallet...");
-
-      const context = this.browser.contexts()[0];
-
-      const xversePage = new XverseExtensionPage(await context.newPage());
-      await xversePage.goto();
-      await xversePage.createWallet();
-
-      console.log("Starting test with existing Chrome and Xverse...");
-
-      const ducatPage = new DucatProtocolPage(await context.newPage());
-      await ducatPage.goto();
-      this.page = await ducatPage.launchApp(context);
-
-      const appPage = new DucatProtocolPage(this.page);
-      await appPage.waitForLoad();
-      await appPage.connectWallet();
-
-      const walletPage = await appPage.selectXverseWallet(
-        context,
-        handlePageTransition,
-      );
-      if (walletPage) {
-        await walletPage.click('xpath=//*[contains(text(), "Accept")]');
-      } else {
-        console.error("Failed to capture the wallet page");
-      }
-
-      const xverseConfigPage = new XverseExtensionPage(await context.newPage());
-      await xverseConfigPage.goto();
-      await xverseConfigPage.configureNetwork();
-
-      const ducatPage2 = new DucatProtocolPage(await context.newPage());
-      await ducatPage2.goto();
-      this.page = await ducatPage2.launchApp(context);
-
-      const appPage2 = new DucatProtocolPage(this.page);
-      await appPage2.waitForLoad();
-      await appPage2.connectWallet();
-
-      const walletPage2 = await appPage2.selectXverseWallet(
-        context,
-        handlePageTransition,
-      );
-      if (walletPage2) {
-        await walletPage2.click('xpath=//*[contains(text(), "Accept")]');
-      } else {
-        console.error("Failed to capture the wallet page");
-      }
-
-      const vaultPage = new VaultCreationPage(this.page);
-      await vaultPage.navigateToCreateVault();
-      await vaultPage.fillVaultName(generateRandomString());
-      await this.page.waitForTimeout(8000);
-      await vaultPage.completeVaultCreation();
-      await vaultPage.handleConfirmation(context, handlePageTransition);
-      await vaultPage.waitForSuccessAndNavigate();
-    } catch (error) {
-      console.error("Error:", error);
-      throw error;
-    }
-  },
-);

@@ -11,6 +11,9 @@ class repayPage extends BasePage {
       repayAction:
         'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[2]/button[2]',
       repay25: 'xpath=(//button[@type="button"])[4]',
+      repay50: 'xpath=(//button[@type="button"])[5]',
+      repay75: 'xpath=(//button[@type="button"])[6]',
+      repay100: 'xpath=(//button[@type="button"])[7]',
       repay_button:
         'xpath=(//button[contains(@class, "bg-button-primary") and contains(text(), "Repay")])[1]',
       repayInProgress:
@@ -25,27 +28,52 @@ class repayPage extends BasePage {
         'xpath=//*[contains(text(), "Close") or contains(text(), "Close")]',
     };
   }
-  async performRepay() {
+  async performRepay(percentage) {
     await this.page.locator(this.selectorOfRepay.repayAction).click();
     await this.page.waitForTimeout(5000);
-    await this.page
-      .locator(this.selectorOfRepay.repay25)
-      .waitFor({ state: "visible", timeout: 10000 });
-    await this.page.locator(this.selectorOfRepay.repay25).click();
+    let repaySelector;
+    
+    const parsedPercentage = parseInt(String(percentage).replace('%', ''));
+    
+    switch (parsedPercentage) {
+      case 25:
+        repaySelector = this.selectorOfRepay.repay25;
+        break;
+      case 50:
+        repaySelector = this.selectorOfRepay.repay50;
+        break;
+      case 75:
+        repaySelector = this.selectorOfRepay.repay75;
+        break;
+      case 100:
+        repaySelector = this.selectorOfRepay.repay100;
+        break;
+      default:
+        console.log(`Invalid percentage: ${percentage}. Defaulting to 25%.`);
+        repaySelector = this.selectorOfRepay.repay25;
+    }
+    
+    await this.page.locator(repaySelector).waitFor({ state: "visible", timeout: 10000 });
+    await this.page.locator(repaySelector).click();
+    
     await this.page.locator(this.selectorOfRepay.repay_button).waitFor({
       state: "visible",
       timeout: 10000,
     });
+    
     const isDisabled = await this.page
       .locator(this.selectorOfRepay.repay_button)
       .isDisabled();
+    
     if (isDisabled) {
       console.log("Waiting for repay button to be enabled...");
       await this.page.waitForTimeout(2000);
     }
+    
     console.log("Clicking repay button...");
     await this.page.locator(this.selectorOfRepay.repay_button).click();
-    console.log("repay button clicked successfully");
+    console.log("Repay button clicked successfully");
+    
     return this;
   }
   async handleConfirmationOfRepay(context, handlePageTransition) {
