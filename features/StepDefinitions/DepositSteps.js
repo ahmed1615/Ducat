@@ -1,18 +1,18 @@
 const { Given, When, Then } = require("@cucumber/cucumber");
 const { expect } = require("@playwright/test");
-const VaultAfterCreation = require("../pages/valutAfterCreation");
+const depositPage = require("../pages/depositPage.js");
 const { handlePageTransition } = require("../pages/utils/pageUtils.js");
 
 let vaultPage;
 let initialBalance;
 
 Given("user is on the vault page", async function () {
-  vaultPage = new VaultAfterCreation(this.page);
+  vaultPage = new depositPage(this.page);
   initialBalance = await vaultPage.getCurrentBalance();
   console.log(`Initial balance captured: $${initialBalance}`);
 });
 When("i need to deposit", function () {
-  vaultPage = new VaultAfterCreation(this.page);
+  vaultPage = new depositPage(this.page);
   vaultPage.performDeposit();
 });
 

@@ -1,6 +1,6 @@
-Feature: Advanced Vault Management in Ducat Protocol
+Feature: create first deposit
 
-  Scenario: Deposit funds into an existing vault
+  Scenario: make a deposit and check balance
     Given I have opened the Xverse extension
     When I create a new wallet with password
     And I navigate to Ducat Protocol app

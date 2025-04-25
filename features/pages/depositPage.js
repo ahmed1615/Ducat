@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-class valutAfterCreation extends BasePage {
+class depositPage extends BasePage {
   constructor(page) {
     super(page);
 
@@ -136,4 +136,4 @@ class valutAfterCreation extends BasePage {
     return this;
   }
 }
-module.exports = valutAfterCreation;
+module.exports = depositPage;
