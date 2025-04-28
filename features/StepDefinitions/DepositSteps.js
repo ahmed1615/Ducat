@@ -11,9 +11,10 @@ Given("user is on the vault page", async function () {
   initialBalance = await vaultPage.getCurrentBalance();
   console.log(`Initial balance captured: $${initialBalance}`);
 });
-When("i need to deposit", function () {
+
+When("i need to deposit {string}", function (percentage) {
   vaultPage = new depositPage(this.page);
-  vaultPage.performDeposit();
+  vaultPage.performDeposit(percentage);
 });
 
 When("user confirms deposit", async function () {

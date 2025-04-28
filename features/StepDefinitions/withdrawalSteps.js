@@ -12,9 +12,9 @@ Given("user is on the vault page for withdrawal", async function () {
   console.log(`Initial balance captured before withdrawal: $${initialBalance}`);
 });
 
-When("user needs to create withdrawal", function () {
+When("user needs to create withdrawal {string}", function (percentage) {
   withdrawalPage = new WithdrawalPage(this.page);
-  withdrawalPage.performWithdrawal();
+  withdrawalPage.performWithdrawal(percentage);
 });
 
 When("user confirms withdrawal", async function () {

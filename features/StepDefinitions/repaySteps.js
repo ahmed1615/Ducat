@@ -12,9 +12,9 @@ Given("user is on the vault page for repay", async function () {
   console.log(`Initial balance captured before repay: ${initialBalance}`);
 });
 
-When("user initiates a repay", function () {
+When("user initiates a repay {string}", function (percentage) {
   repayPage = new RepayPage(this.page);
-  repayPage.performRepay();
+  repayPage.performRepay(percentage);
 });
 
 When("user confirms repay", async function () {

@@ -1,11 +1,11 @@
 {
-  "name": "simpleChat",
+  "name": "DucatProtocol",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cucumber-js --format=json:./reports/cucumber_report.json && exit 0",
-    "test:parallel": "cucumber-js --parallel 4",
+    "test": "cucumber-js --format=json:./Reports/cucumber_report.json && exit 0",
+    "test:parallel": "cucumber-js --parallel 20",
     "generate-report": "npx cucumber-html-reporter",
     "format": "prettier --write ."
   },
@@ -17,7 +17,6 @@
     "allure-commandline": "^2.29.0",
     "child_process": "^1.0.2",
     "crypto-js": "^4.2.0",
-    "cucumber-html-reporter": "^6.0.0",
     "dotenv": "^16.5.0",
     "jimp": "^0.22.12",
     "mongodb": "^6.8.0",
@@ -35,6 +34,7 @@
     "@playwright/test": "^1.45.1",
     "@types/node": "^20.14.2",
     "allure-playwright": "3.0.0-beta.3",
+    "cucumber-html-reporter": "^6.0.0",
     "prettier": "^3.5.3"
   }
 }
