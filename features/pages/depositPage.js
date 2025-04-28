@@ -9,9 +9,7 @@ class depositPage extends BasePage {
 
     this.selectorsOfvault = {
       borrow:
-        'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[2]/button[1]',
-      repay:
-        'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[2]/button[2]',
+        'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[2]/button[1]'
     };
     this.selectorOfDeposit = {
       depositAction:
@@ -33,7 +31,7 @@ class depositPage extends BasePage {
     };
   }
   async getCurrentBalance() {
-    await this.page.waitForTimeout(6000);
+    await this.page.waitForTimeout(4000);
     const balanceText = await this.page
       .locator(this.selectorOfDeposit.balanceElement)
       .textContent();
@@ -70,7 +68,7 @@ class depositPage extends BasePage {
 
   async performDeposit(percentage) {
     await this.page.locator(this.selectorOfDeposit.depositAction).click();
-    await this.page.waitForTimeout(5000);
+    await this.page.waitForTimeout(4000);
     let depositSelector;
     const parsedPercentage = parseInt(String(percentage).replace('%', ''));
     

@@ -80,7 +80,7 @@ Then("I should be able to create a new vault with {string} of Deposit OTC and {s
   const vaultPage = new VaultCreationPage(this.page);
   await vaultPage.navigateToCreateVault();
   await vaultPage.fillVaultName(generateRandomString());
-  await this.page.waitForTimeout(8000);
+  await this.page.waitForTimeout(4000);
   await vaultPage.completeVaultCreation(depositOTC, borrowUnit);
   await vaultPage.handleConfirmation(this.context, handlePageTransition);
   await vaultPage.waitForSuccessAndNavigate();

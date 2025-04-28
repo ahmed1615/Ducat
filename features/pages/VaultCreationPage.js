@@ -194,7 +194,7 @@ class VaultCreationPage extends BasePage {
       timeout: 60000,
     });
     await this.page.click(this.selectors.receiveButton);
-    await this.page.waitForTimeout(8000);
+    await this.page.waitForTimeout(4000);
     await this.page.click(this.selectors.createVaultButton);
     return this;
   }

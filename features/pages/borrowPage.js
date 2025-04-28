@@ -3,80 +3,81 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-class repayPage extends BasePage {
+class borrowPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.selectorOfRepay = {
-      repayAction:
-        'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[2]/button[2]',
-      repay25: 'xpath=(//button[@type="button"])[4]',
-      repay50: 'xpath=(//button[@type="button"])[5]',
-      repay75: 'xpath=(//button[@type="button"])[6]',
-      repay100: 'xpath=(//button[@type="button"])[7]',
-      repay_button:
-        'xpath=(//button[contains(@class, "bg-button-primary") and contains(text(), "Repay")])[1]',
-      repayInProgress:
-        'xpath = //div[contains(text(),"BTC Repay in Progress . . .")]',
-      repayCompleted: 'xpath = //div[contains(text(),"BTC Repay Completed")]',
-      repayBalanceElement: "xpath=(//h3)[2]/div",
-    };
+    this.selectorsOfvault = {
+      borrowAction:
+        'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[2]/button[1]',
+        borrow25: 'xpath=(//button[@type="button"])[4]',
+        borrow50 : 'xpath=(//button[@type="button"])[5]',
+        borrow75: 'xpath=(//button[@type="button"])[6]',
+        borrow100: 'xpath=(//button[@type="button"])[7]',
+        borrowButton: '(//button[contains(@class, "bg-button-primary") and contains(text(), "Borrow")])[2]',
+        borrowInProgress:
+          'xpath = //div[contains(text(),"BTC Borrow in Progress . . .")]',
+        borrowComplete: 'xpath = //div[contains(text(),"BTC Borrow Complete")]',
+        balanceElement: "xpath=(//h3)[2]/div",
+    },
     this.selectorsofXverse = {
-      confirmAllButton:
-        'xpath=//*[contains(text(), "Confirm all") or contains(text(), "confirm")]',
-      closeButton:
-        'xpath=//*[contains(text(), "Close") or contains(text(), "Close")]',
-    };
+        confirmAllButton:
+          'xpath=//*[contains(text(), "Confirm all") or contains(text(), "confirm")]',
+        closeButton:
+          'xpath=//*[contains(text(), "Close") or contains(text(), "Close")]',
+      };
   }
-  async performRepay(percentage) {
-    await this.page.locator(this.selectorOfRepay.repayAction).click();
+
+  async performBorrow(percentage) {
+    await this.page.locator(this.selectorsOfvault.borrowAction).click();
     await this.page.waitForTimeout(3000);
-    let repaySelector;
+    let borrowSelector;
     
     const parsedPercentage = parseInt(String(percentage).replace('%', ''));
     
     switch (parsedPercentage) {
       case 25:
-        repaySelector = this.selectorOfRepay.repay25;
+        borrowSelector = this.selectorsOfvault.borrow25;
         break;
       case 50:
-        repaySelector = this.selectorOfRepay.repay50;
+        borrowSelector = this.selectorsOfvault.borrow50;
         break;
       case 75:
-        repaySelector = this.selectorOfRepay.repay75;
+        borrowSelector = this.selectorsOfvault.borrow75;
         break;
       case 100:
-        repaySelector = this.selectorOfRepay.repay100;
+        borrowSelector = this.selectorsOfvault.borrow100;
         break;
       default:
         console.log(`Invalid percentage: ${percentage}. Defaulting to 25%.`);
-        repaySelector = this.selectorOfRepay.repay25;
+        borrowSelector = this.selectorsOfvault.borrow25;
     }
     
-    await this.page.locator(repaySelector).waitFor({ state: "visible", timeout: 10000 });
-    await this.page.locator(repaySelector).click();
+    await this.page.locator(borrowSelector).waitFor({ state: "visible", timeout: 10000 });
+    await this.page.locator(borrowSelector).click();
     
-    await this.page.locator(this.selectorOfRepay.repay_button).waitFor({
+    await this.page.locator(this.selectorsOfvault.borrowButton).waitFor({
       state: "visible",
       timeout: 10000,
     });
     
     const isDisabled = await this.page
-      .locator(this.selectorOfRepay.repay_button)
+      .locator(this.selectorsOfvault.borrowButton)
       .isDisabled();
     
     if (isDisabled) {
-      console.log("Waiting for repay button to be enabled...");
+      console.log("Waiting for borrow button to be enabled...");
       await this.page.waitForTimeout(2000);
     }
     
-    console.log("Clicking repay button...");
-    await this.page.locator(this.selectorOfRepay.repay_button).click();
-    console.log("Repay button clicked successfully");
+    console.log("Clicking borrow button...");
+    await this.page.locator(this.selectorsOfvault.borrowButton).click();
+    console.log("Borrow button clicked successfully");
     
     return this;
   }
-  async handleConfirmationOfRepay(context, handlePageTransition) {
+
+  async handleConfirmationOfBorrow(context, handlePageTransition) {
     console.log("Waiting for confirmation page...");
     const confirmationPage = await handlePageTransition(
       context,
@@ -100,7 +101,7 @@ class repayPage extends BasePage {
           },
         );
         await confirmationPage.click(this.selectorsofXverse.confirmAllButton);
-        console.log("Successfully clicked close button in new tab");
+        console.log("Successfully clicked confirm button in new tab");
         await confirmationPage.waitForSelector(
           this.selectorsofXverse.closeButton,
           {
@@ -110,29 +111,31 @@ class repayPage extends BasePage {
         );
         await confirmationPage.click(this.selectorsofXverse.closeButton);
       } catch (confirmError) {
-        console.error("Error finding or close  button:", confirmError);
+        console.error("Error finding or close button:", confirmError);
       }
     } else {
       console.error("New page was not opened as expected");
     }
     return this;
   }
-  async verifyRepayStatus() {
+
+  async verifyBorrowStatus() {
     await this.page
-      .locator(this.selectorOfRepay.repayInProgress)
+      .locator(this.selectorsOfvault.borrowInProgress)
       .waitFor({ state: "visible" });
     await this.page
-      .locator(this.selectorOfRepay.repayCompleted)
+      .locator(this.selectorsOfvault.borrowComplete)
       .waitFor({ state: "visible", timeout: 60000 });
     return this;
   }
+
   async getCurrentBalance() {
     await this.page.waitForTimeout(1000);
     const balanceText = await this.page
-      .locator(this.selectorOfRepay.repayBalanceElement)
+      .locator(this.selectorsOfvault.balanceElement)
       .textContent();
     const elementInfo = await this.page
-      .locator(this.selectorOfRepay.repayBalanceElement)
+      .locator(this.selectorsOfvault.balanceElement)
       .evaluate((el) => {
         const attributes = {};
         for (const attr of el.attributes) {
@@ -153,9 +156,9 @@ class repayPage extends BasePage {
     return balanceNumber;
   }
 
-  async verifyBalanceDecreased(initialBalance) {
+  async verifyBalanceIncreased(initialBalance) {
     await this.page.waitForTimeout(4000);
-    await this.page.locator(this.selectorOfRepay.repayBalanceElement).waitFor({
+    await this.page.locator(this.selectorsOfvault.balanceElement).waitFor({
       state: "visible",
       timeout: 10000,
     });
@@ -164,16 +167,17 @@ class repayPage extends BasePage {
     console.log(
       `Comparing balances - Initial: ${initialBalance}, Current: $${currentBalance}`,
     );
-    if (currentBalance < initialBalance) {
-      const decrease = initialBalance - currentBalance;
-      console.log(`Balance decreased by: $${decrease.toFixed(2)}`);
+    if (currentBalance > initialBalance) {
+      const increase = currentBalance - initialBalance;
+      console.log(`Balance increased by: $${increase.toFixed(2)}`);
       return true;
     } else {
       console.error(
-        `Balance did not decrease. Initial: $${initialBalance}, Current: $${currentBalance}`,
+        `Balance did not increase. Initial: $${initialBalance}, Current: $${currentBalance}`,
       );
       return false;
     }
   }
 }
-module.exports = repayPage;
+
+module.exports = borrowPage;

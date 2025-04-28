@@ -29,7 +29,7 @@ class withdrawalPage extends BasePage {
   }
   async performWithdrawal(percentage) {
     await this.page.locator(this.selectorOfWithdraw.withdrawAction).click();
-    await this.page.waitForTimeout(5000);
+    await this.page.waitForTimeout(4000);
     let withdrawSelector;
     
     const parsedPercentage = parseInt(String(percentage).replace('%', ''));
@@ -121,7 +121,7 @@ class withdrawalPage extends BasePage {
     return this;
   }
   async getCurrentBalance() {
-    await this.page.waitForTimeout(6000);
+    await this.page.waitForTimeout(4000);
     const balanceText = await this.page
       .locator(this.selectorOfWithdraw.balanceElement)
       .textContent();
