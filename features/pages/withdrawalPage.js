@@ -29,11 +29,11 @@ class withdrawalPage extends BasePage {
   }
   async performWithdrawal(percentage) {
     await this.page.locator(this.selectorOfWithdraw.withdrawAction).click();
-    await this.page.waitForTimeout(5000);
+    await this.page.waitForTimeout(4000);
     let withdrawSelector;
-    
-    const parsedPercentage = parseInt(String(percentage).replace('%', ''));
-    
+
+    const parsedPercentage = parseInt(String(percentage).replace("%", ""));
+
     switch (parsedPercentage) {
       case 25:
         withdrawSelector = this.selectorOfWithdraw.withdrawal25;
@@ -51,28 +51,28 @@ class withdrawalPage extends BasePage {
         console.log(`Invalid percentage: ${percentage}. Defaulting to 25%.`);
         withdrawSelector = this.selectorOfWithdraw.withdrawal25;
     }
-    
+
     await this.page.locator(withdrawSelector).waitFor({ state: "visible" });
     await this.page.locator(withdrawSelector).click();
-    
+
     await this.page.locator(this.selectorOfWithdraw.withdraw_button).waitFor({
       state: "visible",
       timeout: 10000,
     });
-    
+
     const isDisabled = await this.page
       .locator(this.selectorOfWithdraw.withdraw_button)
       .isDisabled();
-    
+
     if (isDisabled) {
       console.log("Waiting for withdrawal button to be enabled...");
       await this.page.waitForTimeout(2000);
     }
-    
+
     console.log("Clicking withdraw button...");
     await this.page.locator(this.selectorOfWithdraw.withdraw_button).click();
     console.log("Withdraw button clicked successfully");
-    
+
     return this;
   }
   async handleConfirmationOfWithdraw(context, handlePageTransition) {
@@ -121,7 +121,7 @@ class withdrawalPage extends BasePage {
     return this;
   }
   async getCurrentBalance() {
-    await this.page.waitForTimeout(6000);
+    await this.page.waitForTimeout(4000);
     const balanceText = await this.page
       .locator(this.selectorOfWithdraw.balanceElement)
       .textContent();
@@ -133,7 +133,7 @@ class withdrawalPage extends BasePage {
   }
 
   async verifyBalanceDecreased(initialBalance) {
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(5000);
     await this.page.reload();
     await this.page.locator(this.selectorOfWithdraw.balanceElement).waitFor({
       state: "visible",

@@ -10,14 +10,12 @@ class depositPage extends BasePage {
     this.selectorsOfvault = {
       borrow:
         'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[2]/button[1]',
-      repay:
-        'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[2]/button[2]',
     };
     this.selectorOfDeposit = {
       depositAction:
         'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[1]/button[1]',
       deposit25: 'xpath=(//button[@type="button"])[4]',
-      deposit50 : 'xpath=(//button[@type="button"])[5]',
+      deposit50: 'xpath=(//button[@type="button"])[5]',
       deposit75: 'xpath=(//button[@type="button"])[6]',
       deposit100: 'xpath=(//button[@type="button"])[7]',
       deposit_button:
@@ -33,7 +31,7 @@ class depositPage extends BasePage {
     };
   }
   async getCurrentBalance() {
-    await this.page.waitForTimeout(6000);
+    await this.page.waitForTimeout(4000);
     const balanceText = await this.page
       .locator(this.selectorOfDeposit.balanceElement)
       .textContent();
@@ -70,10 +68,10 @@ class depositPage extends BasePage {
 
   async performDeposit(percentage) {
     await this.page.locator(this.selectorOfDeposit.depositAction).click();
-    await this.page.waitForTimeout(5000);
+    await this.page.waitForTimeout(4000);
     let depositSelector;
-    const parsedPercentage = parseInt(String(percentage).replace('%', ''));
-    
+    const parsedPercentage = parseInt(String(percentage).replace("%", ""));
+
     switch (parsedPercentage) {
       case 25:
         depositSelector = this.selectorOfDeposit.deposit25;
@@ -99,18 +97,18 @@ class depositPage extends BasePage {
     const isDisabled = await this.page
       .locator(this.selectorOfDeposit.deposit_button)
       .isDisabled();
-    
+
     if (isDisabled) {
       console.log("Waiting for deposit button to be enabled...");
       await this.page.waitForTimeout(2000);
     }
-    
+
     console.log("Clicking deposit button...");
     await this.page.locator(this.selectorOfDeposit.deposit_button).click();
     console.log("Deposit button clicked successfully");
-    
+
     return this;
-}
+  }
 
   async handleConfirmation(context, handlePageTransition) {
     console.log("Waiting for confirmation page...");

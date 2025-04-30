@@ -21,7 +21,7 @@ class DucatProtocolPage extends BasePage {
 
   async goto() {
     await this.page.goto(this.url);
-    await this.page.waitForTimeout(5000);
+    await this.page.waitForTimeout(3000);
 
     try {
       await this.page.waitForSelector(this.selectors.cookieAcceptButton, {

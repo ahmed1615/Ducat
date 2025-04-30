@@ -23,9 +23,16 @@ class VaultCreationPage extends BasePage {
       closeButton: 'xpath=//*[contains(text(), "Close")]',
       successMessage: '//h2[contains(text(), "Vault Successfully Created!")]',
       goToVaultButton: '//button[contains(text(), "Go to Vault")]',
-      receiveButton: 'xpath=//*[contains(text(),"mutinynet") or contains(text(),"signet")]',
+      receiveButton:
+        'xpath=//*[contains(text(),"mutinynet") or contains(text(),"signet")]',
       createVaultButton: 'xpath=//*[contains(text(), "Create Vault")]',
-    };
+    },
+      this.selectorsOfTable ={
+          DateOfLastOperation: 'xpath =//tbody/tr[2]/td[1]/span',
+          typeOfLastOperation: 'xpath =//tbody/tr[2]/td[2]/div/div/span',
+          amountOfLastOperation: 'xpath =//tbody/tr[2]/td[5]/div/span[1]',
+          topOfPage : 'xpath = //h6[contains(text(),"BTC Deposited in Vault")]'
+      };
   }
 
   async fillVaultName(name) {
@@ -35,6 +42,7 @@ class VaultCreationPage extends BasePage {
   }
 
   async completeVaultCreation(depositBtc, borrowUnit) {
+    await this.page.waitForTimeout(1000);
     let errorExists = await this.page
       .locator(this.selectors.feeErrorMessage)
       .filter({
@@ -42,14 +50,14 @@ class VaultCreationPage extends BasePage {
       })
       .isVisible()
       .catch(() => false);
-  
+
     if (errorExists) {
       console.log("Fee error message detected. Waiting for it to disappear...");
-  
-      const maxWaitTime = 30000;
+
+      const maxWaitTime = 40000;
       const checkInterval = 1000;
       const startTime = Date.now();
-  
+
       while (Date.now() - startTime < maxWaitTime) {
         errorExists = await this.page
           .locator(this.selectors.feeErrorMessage)
@@ -58,28 +66,30 @@ class VaultCreationPage extends BasePage {
           })
           .isVisible()
           .catch(() => false);
-  
+
         if (!errorExists) {
           console.log(
             "Error message is no longer visible, continuing with workflow",
           );
           break;
         }
-  
+
         await this.page.waitForTimeout(checkInterval);
       }
-  
+
       if (errorExists) {
         console.log(
           "Error message remained visible after timeout. Will attempt to continue anyway.",
         );
       }
     }
-  
+
     if (depositBtc) {
-      const parsedDepositPercentage = parseInt(String(depositBtc).replace('%', ''));
+      const parsedDepositPercentage = parseInt(
+        String(depositBtc).replace("%", ""),
+      );
       let depositSelector;
-      
+
       switch (parsedDepositPercentage) {
         case 25:
           depositSelector = this.selectors.DepositBTC25;
@@ -94,17 +104,21 @@ class VaultCreationPage extends BasePage {
           depositSelector = this.selectors.DepositBTC100;
           break;
         default:
-          console.log(`Invalid deposit percentage: ${depositBtc}. Defaulting to 25%.`);
+          console.log(
+            `Invalid deposit percentage: ${depositBtc}. Defaulting to 25%.`,
+          );
           depositSelector = this.selectors.DepositBTC25;
       }
-      
+
       console.log(`Selecting ${depositBtc} BTC deposit`);
       await this.page.click(depositSelector);
     }
     if (borrowUnit) {
-      const parsedBorrowPercentage = parseInt(String(borrowUnit).replace('%', ''));
+      const parsedBorrowPercentage = parseInt(
+        String(borrowUnit).replace("%", ""),
+      );
       let borrowSelector;
-      
+
       switch (parsedBorrowPercentage) {
         case 25:
           borrowSelector = this.selectors.BorrowUNIT25;
@@ -119,17 +133,19 @@ class VaultCreationPage extends BasePage {
           borrowSelector = this.selectors.BorrowUNIT100;
           break;
         default:
-          console.log(`Invalid borrow percentage: ${borrowUnit}. Defaulting to 25%.`);
+          console.log(
+            `Invalid borrow percentage: ${borrowUnit}. Defaulting to 25%.`,
+          );
           borrowSelector = this.selectors.BorrowUNIT25;
       }
-      
+
       console.log(`Selecting ${borrowUnit} UNIT borrow`);
       await this.page.click(borrowSelector);
     }
     await this.page.click(this.selectors.previewButton);
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(4000);
     await this.page.click(this.selectors.confirmButton);
-    
+
     return this;
   }
 
@@ -194,9 +210,72 @@ class VaultCreationPage extends BasePage {
       timeout: 60000,
     });
     await this.page.click(this.selectors.receiveButton);
-    await this.page.waitForTimeout(8000);
+    await this.page.waitForTimeout(4000);
     await this.page.click(this.selectors.createVaultButton);
     return this;
+  }
+  async assertLastOperation(operationType) {
+    try {
+      const dateElement = await this.page.locator(this.selectorsOfTable.DateOfLastOperation);
+      await dateElement.scrollIntoViewIfNeeded();
+      await this.page.waitForTimeout(500);
+      console.log("Scrolled to DateOfLastOperation element");
+    } catch (error) {
+      console.error("Failed to scroll to DateOfLastOperation:", error);
+      await this.page.evaluate(() => {
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+    }
+    const displayedOperationType = await this.page.textContent(this.selectorsOfTable.typeOfLastOperation);
+    const displayedDate = await this.page.textContent(this.selectorsOfTable.DateOfLastOperation);
+    const displayedAmount = await this.page.textContent(this.selectorsOfTable.amountOfLastOperation);
+    let expectedTypeText;
+    switch (operationType.toLowerCase()) {
+      case 'borrow':
+        expectedTypeText = 'borrow UNIT';
+        break;
+      case 'withdrawal':
+        expectedTypeText = 'withdraw BTC';
+        break;
+      case 'deposit':
+        expectedTypeText = 'deposit BTC';
+        break;
+      case 'repay':
+        expectedTypeText = 'repay UNIT' || 'Repay UNIT';
+        break;
+      default:
+        expectedTypeText = operationType;
+    }
+    if (!displayedOperationType.includes(expectedTypeText)) {
+      throw new Error(`Operation type mismatch: expected "${expectedTypeText}", got "${displayedOperationType}"`);
+    }
+    const today = new Date();
+    const day = today.getDate();
+    const month = today.toLocaleString('en-US', { month: 'short' });
+    const year = today.getFullYear();
+    const expectedDateFormat = `${day} ${month} ${year}`;
+    
+    console.log(`Checking date: expected format "${expectedDateFormat}", got "${displayedDate}"`);
+    if (!displayedDate.includes(expectedDateFormat)) {
+      throw new Error(`Date format mismatch: expected to include "${expectedDateFormat}", got "${displayedDate}"`);
+    }
+    console.log(`Checking amount: expected to include "$", got "${displayedAmount}"`);
+    if (!displayedAmount.includes('$')) {
+      throw new Error(`Amount format mismatch: expected to include "$", got "${displayedAmount}"`);
+    }
+    try {
+      const topElement = await this.page.locator(this.selectorsOfTable.topOfPage);
+      await topElement.scrollIntoViewIfNeeded();
+      await this.page.waitForTimeout(500);
+      console.log("Scrolled back to the top of the page");
+    } catch (error) {
+      console.error("Failed to scroll to top of page:", error);
+      await this.page.evaluate(() => {
+        window.scrollTo(0, 0);
+      });
+    }
+    
+    return true;
   }
 }
 

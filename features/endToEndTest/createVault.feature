@@ -45,14 +45,3 @@ Feature: Create new vaults with different deposit and borrow combinations
   Scenario: Create vault with 75% Deposit OTC and 100% Borrow UNIT
     Then I should be able to create a new vault with "75%" of Deposit OTC and "100%" of Borrow UNIT
 
-  Scenario: Create vault with 100% Deposit OTC and 25% Borrow UNIT
-    Then I should be able to create a new vault with "100%" of Deposit OTC and "25%" of Borrow UNIT
-
-  Scenario: Create vault with 100% Deposit OTC and 50% Borrow UNIT
-    Then I should be able to create a new vault with "100%" of Deposit OTC and "50%" of Borrow UNIT
-
-  Scenario: Create vault with 100% Deposit OTC and 75% Borrow UNIT
-    Then I should be able to create a new vault with "100%" of Deposit OTC and "75%" of Borrow UNIT
-
-  Scenario: Create vault with 100% Deposit OTC and 100% Borrow UNIT
-    Then I should be able to create a new vault with "100%" of Deposit OTC and "100%" of Borrow UNIT

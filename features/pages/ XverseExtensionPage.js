@@ -87,7 +87,7 @@ class XverseExtensionPage extends BasePage {
             "About to click reset button - preparing for page context change",
           );
           await this.page.click(this.selectors.resetButton);
-          await this.page.waitForTimeout(10000);
+          await this.page.waitForTimeout(3000);
 
           try {
             console.log("Re-establishing connection after reset");
@@ -112,7 +112,7 @@ class XverseExtensionPage extends BasePage {
                 .catch(() => {
                   console.log("Network idle wait timed out, continuing anyway");
                 });
-              await this.page.waitForTimeout(3000);
+              await this.page.waitForTimeout(2000);
 
               console.log("Looking for accept button across available tabs");
               let acceptButtonFound = false;
