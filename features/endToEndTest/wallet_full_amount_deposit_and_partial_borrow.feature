@@ -1,5 +1,4 @@
 Feature: Create new vaults with different deposit and borrow combinations
-#10m25.277s
   Background:
     Given I have opened the Xverse extension
     When I create a new wallet with password

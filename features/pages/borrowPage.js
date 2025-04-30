@@ -7,34 +7,35 @@ class borrowPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.selectorsOfvault = {
+    (this.selectorsOfvault = {
       borrowAction:
         'xpath=(//div[@class="flex lg:flex-1 flex-col lg:flex-row-reverse items-center justify-between gap-4 lg:gap-6"])[2]/button[1]',
-        borrow25: 'xpath=(//button[@type="button"])[4]',
-        borrow50 : 'xpath=(//button[@type="button"])[5]',
-        borrow75: 'xpath=(//button[@type="button"])[6]',
-        borrow100: 'xpath=(//button[@type="button"])[7]',
-        borrowButton: '(//button[contains(@class, "bg-button-primary") and contains(text(), "Borrow")])[2]',
-        borrowInProgress:
-          'xpath = //div[contains(text(),"BTC Borrow in Progress . . .")]',
-        borrowComplete: 'xpath = //div[contains(text(),"BTC Borrow Complete")]',
-        balanceElement: "xpath=(//h3)[2]/div",
-    },
-    this.selectorsofXverse = {
+      borrow25: 'xpath=(//button[@type="button"])[4]',
+      borrow50: 'xpath=(//button[@type="button"])[5]',
+      borrow75: 'xpath=(//button[@type="button"])[6]',
+      borrow100: 'xpath=(//button[@type="button"])[7]',
+      borrowButton:
+        '(//button[contains(@class, "bg-button-primary") and contains(text(), "Borrow")])[2]',
+      borrowInProgress:
+        'xpath = //div[contains(text(),"BTC Borrow in Progress . . .")]',
+      borrowComplete: 'xpath = //div[contains(text(),"BTC Borrow Complete")]',
+      balanceElement: "xpath=(//h3)[2]/div",
+    }),
+      (this.selectorsofXverse = {
         confirmAllButton:
           'xpath=//*[contains(text(), "Confirm all") or contains(text(), "confirm")]',
         closeButton:
           'xpath=//*[contains(text(), "Close") or contains(text(), "Close")]',
-      };
+      });
   }
 
   async performBorrow(percentage) {
     await this.page.locator(this.selectorsOfvault.borrowAction).click();
     await this.page.waitForTimeout(3000);
     let borrowSelector;
-    
-    const parsedPercentage = parseInt(String(percentage).replace('%', ''));
-    
+
+    const parsedPercentage = parseInt(String(percentage).replace("%", ""));
+
     switch (parsedPercentage) {
       case 25:
         borrowSelector = this.selectorsOfvault.borrow25;
@@ -52,28 +53,30 @@ class borrowPage extends BasePage {
         console.log(`Invalid percentage: ${percentage}. Defaulting to 25%.`);
         borrowSelector = this.selectorsOfvault.borrow25;
     }
-    
-    await this.page.locator(borrowSelector).waitFor({ state: "visible", timeout: 10000 });
+
+    await this.page
+      .locator(borrowSelector)
+      .waitFor({ state: "visible", timeout: 10000 });
     await this.page.locator(borrowSelector).click();
-    
+
     await this.page.locator(this.selectorsOfvault.borrowButton).waitFor({
       state: "visible",
       timeout: 10000,
     });
-    
+
     const isDisabled = await this.page
       .locator(this.selectorsOfvault.borrowButton)
       .isDisabled();
-    
+
     if (isDisabled) {
       console.log("Waiting for borrow button to be enabled...");
       await this.page.waitForTimeout(2000);
     }
-    
+
     console.log("Clicking borrow button...");
     await this.page.locator(this.selectorsOfvault.borrowButton).click();
     console.log("Borrow button clicked successfully");
-    
+
     return this;
   }
 

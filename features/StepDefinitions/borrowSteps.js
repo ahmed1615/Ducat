@@ -18,7 +18,10 @@ When("user initiates a borrow {string}", async function (percentage) {
 });
 
 When("user confirms borrow", async function () {
-  await borrowPage.handleConfirmationOfBorrow(this.context, handlePageTransition);
+  await borrowPage.handleConfirmationOfBorrow(
+    this.context,
+    handlePageTransition,
+  );
 });
 
 Then("the borrow should be completed", async function () {
@@ -26,6 +29,7 @@ Then("the borrow should be completed", async function () {
 });
 
 Then("the balance should be increased after borrow", async function () {
-  const balanceIncreased = await borrowPage.verifyBalanceIncreased(initialBalance);
+  const balanceIncreased =
+    await borrowPage.verifyBalanceIncreased(initialBalance);
   expect(balanceIncreased).toBeTruthy();
 });

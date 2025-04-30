@@ -32,9 +32,9 @@ class repayPage extends BasePage {
     await this.page.locator(this.selectorOfRepay.repayAction).click();
     await this.page.waitForTimeout(3000);
     let repaySelector;
-    
-    const parsedPercentage = parseInt(String(percentage).replace('%', ''));
-    
+
+    const parsedPercentage = parseInt(String(percentage).replace("%", ""));
+
     switch (parsedPercentage) {
       case 25:
         repaySelector = this.selectorOfRepay.repay25;
@@ -52,28 +52,30 @@ class repayPage extends BasePage {
         console.log(`Invalid percentage: ${percentage}. Defaulting to 25%.`);
         repaySelector = this.selectorOfRepay.repay25;
     }
-    
-    await this.page.locator(repaySelector).waitFor({ state: "visible", timeout: 10000 });
+
+    await this.page
+      .locator(repaySelector)
+      .waitFor({ state: "visible", timeout: 10000 });
     await this.page.locator(repaySelector).click();
-    
+
     await this.page.locator(this.selectorOfRepay.repay_button).waitFor({
       state: "visible",
       timeout: 10000,
     });
-    
+
     const isDisabled = await this.page
       .locator(this.selectorOfRepay.repay_button)
       .isDisabled();
-    
+
     if (isDisabled) {
       console.log("Waiting for repay button to be enabled...");
       await this.page.waitForTimeout(2000);
     }
-    
+
     console.log("Clicking repay button...");
     await this.page.locator(this.selectorOfRepay.repay_button).click();
     console.log("Repay button clicked successfully");
-    
+
     return this;
   }
   async handleConfirmationOfRepay(context, handlePageTransition) {
@@ -154,7 +156,7 @@ class repayPage extends BasePage {
   }
 
   async verifyBalanceDecreased(initialBalance) {
-    await this.page.waitForTimeout(4000);
+    await this.page.waitForTimeout(5000);
     await this.page.locator(this.selectorOfRepay.repayBalanceElement).waitFor({
       state: "visible",
       timeout: 10000,

@@ -1,4 +1,4 @@
-const { When, Before, After, Given, Then } = require("@cucumber/cucumber");
+const { When, Given, Then } = require("@cucumber/cucumber");
 const { chromium } = require("playwright");
 const { generateRandomString } = require("../../TestData/generator.js");
 const XverseExtensionPage = require("../pages/ XverseExtensionPage.js");
@@ -76,13 +76,25 @@ When("I reconnect to Ducat Protocol", async function () {
   }
 });
 
-Then("I should be able to create a new vault with {string} of Deposit OTC and {string} of Borrow UNIT", async function (depositOTC, borrowUnit) {
-  const vaultPage = new VaultCreationPage(this.page);
-  await vaultPage.navigateToCreateVault();
-  await vaultPage.fillVaultName(generateRandomString());
-  await this.page.waitForTimeout(4000);
-  await vaultPage.completeVaultCreation(depositOTC, borrowUnit);
-  await vaultPage.handleConfirmation(this.context, handlePageTransition);
-  await vaultPage.waitForSuccessAndNavigate();
-});
-
+Then(
+  "I should be able to create a new vault with {string} of Deposit OTC and {string} of Borrow UNIT",
+  async function (depositOTC, borrowUnit) {
+    const vaultPage = new VaultCreationPage(this.page);
+    await vaultPage.navigateToCreateVault();
+    await vaultPage.fillVaultName(generateRandomString());
+    await this.page.waitForTimeout(4000);
+    await vaultPage.completeVaultCreation(depositOTC, borrowUnit);
+    await vaultPage.handleConfirmation(this.context, handlePageTransition);
+    await vaultPage.waitForSuccessAndNavigate();
+  },
+);
+Then(
+  "I should see the last operation of type {string} with date of today and amount has $",
+  async function (operationType) {
+    const vaultPage = new VaultCreationPage(this.page);
+    await this.page.waitForTimeout(2000);
+    const operationValid = await vaultPage.assertLastOperation(operationType);
+    expect(operationValid).toBeTruthy();
+    console.log(`Successfully verified last operation of type: ${operationType}`);
+  }
+);

@@ -25,12 +25,9 @@ module.exports = {
       "features/cucumberSupport/hooks.js",
     ],
     formatOptions: {
-      snippetInterface: 'async-await'
+      snippetInterface: "async-await",
     },
-    format: [
-      "@cucumber/pretty-formatter",
-      "json:reports/cucumber_report.json",
-    ],
+    format: ["@cucumber/pretty-formatter", "json:reports/cucumber_report.json"],
     paths: ["features/**/*.feature"],
     publishQuiet: true,
   },
