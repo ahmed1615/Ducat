@@ -6,7 +6,7 @@ dotenv.config();
 class DucatProtocolPage extends BasePage {
   constructor(page) {
     super(page);
-    this.url = process.env.DUCAT_URL;
+    this.url = process.env.DUCAT_URLAPP;
 
     this.selectors = {
       cookieAcceptButton: "input#__framer-cookie-component-button-accept",

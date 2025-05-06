@@ -6,3 +6,4 @@ node_modules/
 /.env
 /palert.yaml
 /Reports
+/test-user-data

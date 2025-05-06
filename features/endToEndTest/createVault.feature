@@ -1,11 +1,12 @@
 Feature: Create new vaults with different deposit and borrow combinations
 
   Background:
-    Given I have opened the Xverse extension
+      Given I have opened the Xverse extension
     When I create a new wallet with password
-    And I navigate to Ducat Protocol app
     When I connect my wallet in the first time
     Then the error network selection do not match
+
+    #2- open wallet
     And I configure the network in Xverse
     And I reconnect to Ducat Protocol
 
