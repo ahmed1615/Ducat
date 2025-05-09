@@ -28,15 +28,15 @@ Feature: Create new vaults with different deposit, borrow, withdrawal and repay
     And I reconnect to Ducat Protocol
 
     # #3- deposit here we can change the percentage between [0, 25, 50, 75, 100]
-     Then I should be able to create a new vault with "25%" of Deposit OTC and "100%" of Borrow UNIT
+     Then I should be able to create a new vault with "50%" of Deposit OTC and "50%" of Borrow UNIT
 
     #  #4-withdrawal
-    # Given user is on the vault page for withdrawal
-    # When user needs to create withdrawal "25%"
-    # And user confirms withdrawal
-    # Then the withdrawal should be completed
-    # And the balance should be decreased
-    # Then I should see the last operation of type "withdrawal" with date of today and amount has $
+     Given user is on the vault page for withdrawal
+     When user needs to create withdrawal "25%"
+     And user confirms withdrawal
+     Then the withdrawal should be completed
+     And the balance should be decreased
+     Then I should see the last operation of type "withdrawal" with date of today and amount has $
 
     # #5-borrow
     # Given user is on the vault page for borrow

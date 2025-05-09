@@ -26,6 +26,7 @@ When("user confirms withdrawal", async function () {
 
 Then("the withdrawal should be completed", async function () {
   await withdrawalPage.verifyWithdrawalStatus();
+  await withdrawalPage.navigateToWithdrawalTransaction();
 });
 
 Then("the balance should be decreased", async function () {

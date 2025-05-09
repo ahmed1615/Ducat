@@ -21,12 +21,8 @@ When("I create a new wallet with password", async function () {
 });
 
 When("I navigate to Ducat Protocol app", async function () {
-  //here i want to got to app page
   this.ducatPage = new DucatProtocolPage(await this.context.newPage());
   await this.ducatPage.goto();
-  // this.page = await this.ducatPage.launchApp(this.context);
-  // this.appPage = new DucatProtocolPage(this.page);
-  // await this.appPage.waitForLoad();
 });
 
 When("I connect my wallet in the first time", async function () {

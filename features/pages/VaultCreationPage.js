@@ -43,6 +43,10 @@ class VaultCreationPage extends BasePage {
       TransactionLink: 'xpath=//div[@class="flex flex-col gap-4"]/div[1]/a',
       closeButtonXverse: 'xpath=//*[contains(text(),"Close")]',
       newWalletName: "xpath=//h1/p",
+      BTCValueInComfirmationPage:
+        'xpath=(//div[@class="flex items-center justify-between gap-4 w-full"])[1][1]/p[2]',
+      UNITValueInComfirmationPage:
+        'xpath=(//div[@class="flex items-center justify-between gap-4 w-full"])[2][1]/p[2]',
     }),
       (this.selectorsOfTable = {
         DateOfLastOperation: "xpath =//tbody/tr[2]/td[1]/span",
@@ -191,6 +195,70 @@ class VaultCreationPage extends BasePage {
     }
     await this.page.click(this.selectors.previewButton);
     await this.page.waitForTimeout(4000);
+    try {
+      await this.page.waitForSelector(
+        this.selectors.BTCValueInComfirmationPage,
+        { timeout: 6000 },
+      );
+      const btcConfirmationText = await this.page.textContent(
+        this.selectors.BTCValueInComfirmationPage,
+      );
+      const btcNumberMatch = btcConfirmationText.match(/[\d.]+/g);
+      const btcConfirmationValue = btcNumberMatch
+        ? btcNumberMatch.join("")
+        : null;
+      const normalizedBtcConfirmation = btcConfirmationValue?.replace(/,/g, "");
+      const normalizedBtcBalance = this.btcValueBalance?.replace(/,/g, "");
+      console.log(`BTC confirmation value: ${normalizedBtcConfirmation}`);
+      console.log(`BTC balance value: ${normalizedBtcBalance}`);
+
+      if (normalizedBtcConfirmation === normalizedBtcBalance) {
+        console.log("BTC values match between confirmation page and balance!");
+      } else {
+        console.warn(
+          `BTC value mismatch: Confirmation shows ${normalizedBtcConfirmation}, balance is ${normalizedBtcBalance}`,
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Failed to validate BTC value on confirmation page:",
+        error,
+      );
+    }
+    try {
+      await this.page.waitForSelector(
+        this.selectors.UNITValueInComfirmationPage,
+        { timeout: 5000 },
+      );
+      const unitConfirmationText = await this.page.textContent(
+        this.selectors.UNITValueInComfirmationPage,
+      );
+      const unitNumberMatch = unitConfirmationText.match(/[\d.]+/g);
+      const unitConfirmationValue = unitNumberMatch
+        ? unitNumberMatch.join("")
+        : null;
+      const normalizedUnitConfirmation = unitConfirmationValue?.replace(
+        /,/g,
+        "",
+      );
+      const normalizedUnitBalance = this.unitValueBalance?.replace(/,/g, "");
+
+      console.log(`UNIT confirmation value: ${normalizedUnitConfirmation}`);
+      console.log(`UNIT balance value: ${normalizedUnitBalance}`);
+
+      if (normalizedUnitConfirmation === normalizedUnitBalance) {
+        console.log("UNIT values match between confirmation page and balance!");
+      } else {
+        console.warn(
+          `UNIT value mismatch: Confirmation shows ${normalizedUnitConfirmation}, balance is ${normalizedUnitBalance}`,
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Failed to validate UNIT value on confirmation page:",
+        error,
+      );
+    }
     await this.page.click(this.selectors.confirmButton);
 
     return this;
@@ -262,14 +330,11 @@ class VaultCreationPage extends BasePage {
             );
             await transactionPage.waitForTimeout(3000);
 
-            // Set up retry parameters
             const maxRetries = 10;
             let retryCount = 0;
             let isElementVisible = false;
 
-            // Loop until element is visible or max retries reached
             while (retryCount < maxRetries && !isElementVisible) {
-              // Check if element is visible
               isElementVisible = await transactionPage
                 .locator(this.selectorofTransaction.transactionNumberTwoBalance)
                 .isVisible()
