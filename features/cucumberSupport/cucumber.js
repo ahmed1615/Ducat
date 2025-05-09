@@ -1,10 +1,9 @@
-const { setDefaultTimeout } = require('@cucumber/cucumber');
+const { setDefaultTimeout } = require("@cucumber/cucumber");
 
-setDefaultTimeout(1500000); 
+setDefaultTimeout(1500000);
 
-
-const { setWorldConstructor } = require('@cucumber/cucumber');
-const { chromium } = require('playwright');
+const { setWorldConstructor } = require("@cucumber/cucumber");
+const { chromium } = require("playwright");
 
 class gonfic {
   async openBrowser() {
@@ -22,17 +21,14 @@ setWorldConstructor(gonfic);
 module.exports = {
   default: {
     require: [
-      'features/StepDefinitions/**/*.js',
-      'features/hooks.js'
+      "features/StepDefinitions/**/*.js",
+      "features/cucumberSupport/hooks.js",
     ],
-    format: [
-      '@cucumber/pretty-formatter', 
-      'json:./reports/cucumber_report.json'
-
-    ],
-    paths: [
-      'features/**/*.feature'
-    ],
-    publishQuiet: true
-  }
+    formatOptions: {
+      snippetInterface: "async-await",
+    },
+    format: ["@cucumber/pretty-formatter", "json:reports/cucumber_report.json"],
+    paths: ["features/**/*.feature"],
+    publishQuiet: true,
+  },
 };
