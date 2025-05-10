@@ -5,3 +5,8 @@
 5-run all test npx cucumber-js --format=json:./reports/cucumber_report.json --exit
 6-grep -r "Scenario:" features/endToEndTest | wc -l
 7-before sending any PR use the command >>> npm run format
+## Screenshots
+
+![Screenshot 1](assets/images/Screenshot%202025-05-09%20at%2018.20.09.png)
+![Screenshot 2](assets/images/Screenshot%202025-05-09%20at%2018.20.33.png)
+![Screenshot 3](assets/images/Screenshot%202025-05-09%20at%2018.20.45.png)
